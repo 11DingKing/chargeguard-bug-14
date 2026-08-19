@@ -8,6 +8,15 @@ import (
 
 func TaskHTTPHandler(w http.ResponseWriter, r *http.Request) {
 	station := charging.RestoreLegacyStation("legacy-1")
+	if station == nil {
+		http.Error(w, "station missing", http.StatusNotFound)
+		return
+	}
 	station.Assign("rectification", "operator-a")
-	_ = json.NewEncoder(w).Encode(map[string]string{"owner": station.Owner("rectification")})
+	owner := station.Owner("rectification")
+	if owner == "" {
+		http.Error(w, "assignment missing", http.StatusConflict)
+		return
+	}
+	_ = json.NewEncoder(w).Encode(map[string]string{"owner": owner})
 }

@@ -7,6 +7,7 @@ type LegacyStation struct {
 
 func RestoreLegacyStation(id string) *LegacyStation {
 	station := &LegacyStation{ID: id}
+	station.Assignments = make(map[string]string)
 	return station
 }
 func (s *LegacyStation) Assign(role, owner string) { s.Assignments[role] = owner }
